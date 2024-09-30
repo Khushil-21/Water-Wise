@@ -65,13 +65,13 @@ def water_jug_problem():
                     new_state = list(state)
                     fill_amount = min(jugs[i]["capacity"] - state[i], water_supply)
                     new_state[i] = jugs[i]["capacity"]
-                    queue.append((tuple(new_state), path + [f"Fill jug {jug_letters[i]}"]))
+                    queue.append((tuple(new_state), path + [(f"Fill jug {jug_letters[i]}", new_state)]))
 
                 # Empty jug
                 if state[i] > 0:
                     new_state = list(state)
                     new_state[i] = 0
-                    queue.append((tuple(new_state), path + [f"Empty jug {jug_letters[i]}"]))
+                    queue.append((tuple(new_state), path + [(f"Empty jug {jug_letters[i]}", new_state)]))
 
                 # Pour to another jug
                 for j in range(num_jugs):
@@ -80,7 +80,7 @@ def water_jug_problem():
                         amount = min(state[i], jugs[j]["capacity"] - state[j])
                         new_state[i] -= amount
                         new_state[j] += amount
-                        queue.append((tuple(new_state), path + [f"Pour {amount}L from jug {jug_letters[i]} to jug {jug_letters[j]}"]))
+                        queue.append((tuple(new_state), path + [(f"Pour {amount}L from jug {jug_letters[i]} to jug {jug_letters[j]}", new_state)]))
 
         return None
 
@@ -88,8 +88,15 @@ def water_jug_problem():
 
     if solution:
         print("\nSolution:")
-        for step in solution:
-            print(step)
+        jug_headers = " ".join(f"{jug_letters[i]:^5}" for i in range(num_jugs))
+        print("-" * (40 + num_jugs * 6))
+        print(f"{'Step':^5} | {'Action':^30} | {jug_headers}")
+        print("-" * (40 + num_jugs * 6))
+        for i, (action, state) in enumerate(solution, 1):
+            jug_state = " ".join(f"{s:3}L" for s in state)
+            print(f"{i:^5} | {action:^30} | {jug_state:^{num_jugs * 6}}")
+            print("-" * (40 + num_jugs * 6))
+        print(f"\nTotal number of steps: {len(solution)}")
     else:
         print("\nNo solution found for the given inputs.")
 
