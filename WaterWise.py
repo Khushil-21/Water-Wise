@@ -1,4 +1,8 @@
 def water_jug_problem():
+    """
+    Main function that sets up and solves the Water Jug Problem.
+    It handles user input, problem setup, solution finding, and result display.
+    """
     print("Welcome to the Water Jug Problem Solver!")
     print("\nRules:")
     print("1. You can only manipulate one jug at a time.")
@@ -35,18 +39,36 @@ def water_jug_problem():
     steps = []
 
     def pour(from_jug, to_jug):
+        """
+        Transfers water from one jug to another.
+        Returns the amount of water transferred.
+        """
+        # Calculate the amount that can be transferred
         amount = min(jugs[from_jug]["current"], jugs[to_jug]["capacity"] - jugs[to_jug]["current"])
-        jugs[from_jug]["current"] -= amount
-        jugs[to_jug]["current"] += amount
+        jugs[from_jug]["current"] -= amount  # Decrease water in source jug
+        jugs[to_jug]["current"] += amount    # Increase water in destination jug
         return amount
 
     def is_goal_reached():
+        """
+        Checks if the current state of jugs matches the target state.
+        Returns True if the goal is reached, False otherwise.
+        """
+        # Check if all jugs match their target amounts (or 0 if no target)
         return all(jugs[i]["current"] == target.get(i, 0) for i in range(num_jugs))
 
     def get_jug_state():
+        """
+        Returns the current state of all jugs as a tuple.
+        """
+        # Create a tuple of current water amounts in all jugs
         return tuple(jug["current"] for jug in jugs)
 
     def solve():
+        """
+        Implements the BFS algorithm to find the solution to the Water Jug Problem.
+        Returns the solution path if found, None otherwise.
+        """
         visited = set()
         queue = [(get_jug_state(), [])]
 
@@ -56,6 +78,7 @@ def water_jug_problem():
                 continue
             visited.add(state)
 
+            # Check if current state matches the target state
             if all(state[i] == target.get(i, 0) for i in range(num_jugs)):
                 return path
 
@@ -102,3 +125,23 @@ def water_jug_problem():
 
 # Run the water jug problem solver
 water_jug_problem()
+
+# Execution flow of the code:
+# 1. The water_jug_problem() function is called.
+# 2. It displays the welcome message and rules of the game.
+# 3. User inputs are collected for the number of jugs, their capacities, and target amounts.
+# 4. The solve() function is called to find the solution using BFS algorithm.
+# 5. If a solution is found, it's displayed step by step.
+# 6. If no solution is found, an appropriate message is displayed.
+#
+# Features:
+# - Supports up to 5 jugs
+# - Allows setting individual capacities for each jug
+# - Allows setting target amounts for each jug
+# - Uses BFS to find the optimal solution
+# - Handles various jug operations: filling, emptying, and transferring between jugs
+# - Provides a clear, step-by-step solution output
+# - Includes error handling for invalid inputs
+# - Has an (currently unused) pour() function for potential future use in manual solving
+# - Includes an is_goal_reached() function to check if the target state is achieved
+# - Uses get_jug_state() to easily obtain the current state of all jugs

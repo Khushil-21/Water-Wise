@@ -2,7 +2,14 @@ import tkinter as tk
 from tkinter import messagebox, scrolledtext
 
 def water_jug_problem():
+    """
+    Main function that sets up the GUI and handles the water jug problem solving process.
+    """
     def solve_problem():
+        """
+        Function to solve the water jug problem based on user inputs.
+        It validates inputs, sets up the problem, finds the solution, and displays the result.
+        """
         # Define jug letters
         jug_letters = ['A', 'B', 'C', 'D', 'E']
 
@@ -28,9 +35,17 @@ def water_jug_problem():
             water_supply = 9999999999999999999999999999
 
             def get_jug_state():
+                """
+                Helper function to get the current state of all jugs.
+                Returns a tuple of current water amounts in each jug.
+                """
                 return tuple(jug["current"] for jug in jugs)
 
             def solve():
+                """
+                Core function to solve the water jug problem using BFS algorithm.
+                Returns the solution path if found, otherwise returns None.
+                """
                 visited = set()
                 queue = [(get_jug_state(), [])]
 
@@ -40,6 +55,7 @@ def water_jug_problem():
                         continue
                     visited.add(state)
 
+                    # Check if current state matches the target state
                     if all(state[i] == target.get(i, 0) for i in range(num_jugs)):
                         return path
 
@@ -61,6 +77,7 @@ def water_jug_problem():
                         for j in range(num_jugs):
                             if i != j and state[i] > 0 and state[j] < jugs[j]["capacity"]:
                                 new_state = list(state)
+                                # Calculate the amount to pour
                                 amount = min(state[i], jugs[j]["capacity"] - state[j])
                                 new_state[i] -= amount
                                 new_state[j] += amount
@@ -73,9 +90,11 @@ def water_jug_problem():
             if solution:
                 result_text.delete(1.0, tk.END)
                 result_text.insert(tk.END, "Solution:\n")
+                # Create header for solution display
                 result_text.insert(tk.END, f"{'Step':^5} | {'Action':^30} | {'Jug States':^{num_jugs * 5}}\n")
                 result_text.insert(tk.END, "-" * (40 + num_jugs * 5) + "\n")
                 for step, (action, state) in enumerate(solution, 1):
+                    # Format jug states for display
                     jug_states = " ".join(f"{s:3d}" for s in state)
                     result_text.insert(tk.END, f"{step:5d} | {action:30} | {jug_states:^{num_jugs * 5}}\n")
                 result_text.insert(tk.END, f"\nTotal number of steps taken: {len(solution)}")
@@ -133,3 +152,40 @@ def water_jug_problem():
 
 # Run the water jug problem solver
 water_jug_problem()
+
+"""
+Execution flow and features of the code:
+
+1. The code starts by importing necessary modules from tkinter.
+
+2. The main function `water_jug_problem()` is defined, which sets up the GUI for the Water Jug Problem Solver.
+
+3. Inside `water_jug_problem()`, a nested function `solve_problem()` is defined to handle the problem-solving logic.
+
+4. The GUI is created using tkinter, including:
+   - A title and welcome message
+   - Rules of the game
+   - Input fields for the number of jugs (max 5)
+   - Input fields for jug capacities and target amounts
+   - A "Solve" button
+   - A text area to display the solution
+
+5. When the user clicks the "Solve" button, `solve_problem()` is called:
+   - It retrieves and validates user inputs
+   - Sets up the problem with jugs and targets
+   - Calls the `solve()` function to find a solution using BFS algorithm
+   - Displays the solution or an error message in the result text area
+
+6. The `solve()` function uses a breadth-first search algorithm to find the shortest path to the target state:
+   - It explores all possible actions: filling a jug, emptying a jug, or transferring water between jugs
+   - It keeps track of visited states to avoid loops
+   - If a solution is found, it returns the path of actions to reach the target state
+
+7. The solution, if found, is displayed step by step in the result text area, showing each action and the resulting jug states.
+
+8. The code handles various error cases, such as invalid inputs or when no solution is found.
+
+9. The GUI remains active and responsive, allowing the user to solve multiple problems without restarting the application.
+
+This code provides a user-friendly interface for solving the Water Jug Problem, with clear instructions, input validation, and detailed solution output.
+"""
